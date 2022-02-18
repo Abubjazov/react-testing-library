@@ -1,4 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import userEvent from "@testing-library/user-event"
+
 import { App } from './App'
 
 describe('App', () => {
@@ -6,9 +8,7 @@ describe('App', () => {
     render(<App />)
     await screen.findByText(/logged in as/i)
     expect(screen.queryByText(/searches for react/i)).toBeNull()
-    fireEvent.change(screen.getByRole('textbox'), {
-      target: { value: 'React' }
-    })
+    userEvent.type(screen.getByRole('textbox'), 'React')
     expect(screen.getByText(/searches for react/i)).toBeInTheDocument()
   })
 })
@@ -19,13 +19,13 @@ describe('events', () => {
     const { container } = render(<input type={'checkbox'} onChange={handleChange}/>)
     const checkbox = container.firstChild
     expect(checkbox).not.toBeChecked()
-    fireEvent.click(checkbox)
+    userEvent.click(checkbox)
     expect(handleChange).toHaveBeenCalledTimes(1)
     expect(checkbox).toBeChecked()
   })
 
   it('input focus', () => {
-    render(<input type={'text'} data-testid={'simple-input'}/>) //const { getByTestId } =
+    render(<input type={'text'} data-testid={'simple-input'}/>)
     const input = screen.getByTestId('simple-input')
     expect(input).not.toHaveFocus()
     input.focus()

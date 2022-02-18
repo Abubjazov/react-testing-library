@@ -9,6 +9,7 @@ const Search = ({ value, onChange, children }) => (
       type='text'
       value={value}
       onChange={onChange}
+      placeholder='search text...'
     />
   </div>
 )
@@ -22,6 +23,7 @@ export const App = () => {
 
   return (
     <div>
+      <img src='' alt='search' />
       <Search value={search} onChange={handleChange}>
         Search:
       </Search>

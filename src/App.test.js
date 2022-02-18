@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { getByTestId, getByText, render, screen } from '@testing-library/react'
 import userEvent from "@testing-library/user-event"
 
 import { App } from './App'
@@ -52,5 +52,22 @@ describe('events', () => {
 
     userEvent.tab()
     expect(number).toHaveFocus()
+  })
+
+  it('select option', () => {
+    render(
+      <select>
+        <option value={'1'}>A</option>
+        <option value={'2'}>B</option>
+        <option value={'3'}>C</option>
+      </select>
+    )
+
+    userEvent.selectOptions(screen.getByRole('combobox'), '1')
+    expect(screen.getByText('A').selected).toBeTruthy()
+
+    userEvent.selectOptions(screen.getByRole('combobox'), '2')
+    expect(screen.queryByText('A').selected).toBeFalsy()
+    expect(screen.getByText('B').selected).toBeTruthy()
   })
 })

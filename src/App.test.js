@@ -20,15 +20,37 @@ describe('events', () => {
     const checkbox = container.firstChild
     expect(checkbox).not.toBeChecked()
     userEvent.click(checkbox)
-    expect(handleChange).toHaveBeenCalledTimes(1)
+    // userEvent.click(checkbox, { ctrlKey: true, shiftKey: true })
     expect(checkbox).toBeChecked()
   })
 
-  it('input focus', () => {
-    render(<input type={'text'} data-testid={'simple-input'}/>)
-    const input = screen.getByTestId('simple-input')
-    expect(input).not.toHaveFocus()
-    input.focus()
-    expect(input).toHaveFocus()
+  it('double click', () => {
+    const onChange = jest.fn()
+    const { container } = render(<input type={'checkbox'} onChange={onChange}/>)
+    const checkbox = container.firstChild
+    expect(checkbox).not.toBeChecked()
+    userEvent.dblClick(checkbox)
+    expect(onChange).toHaveBeenCalledTimes(2)
+  })
+
+  it('focus', () => {
+   render(
+      <div>
+        <input data-testid={'element'} type={'checkbox'} />
+        <input data-testid={'element'} type={'radio'} />
+        <input data-testid={'element'} type={'number'} />
+      </div>
+    )
+
+    const [checkbox, radio, number] = screen.getAllByTestId('element')
+
+    userEvent.tab()
+    expect(checkbox).toHaveFocus()
+
+    userEvent.tab()
+    expect(radio).toHaveFocus()
+
+    userEvent.tab()
+    expect(number).toHaveFocus()
   })
 })

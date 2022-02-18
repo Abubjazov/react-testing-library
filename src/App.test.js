@@ -1,7 +1,10 @@
 import { render, screen } from '@testing-library/react'
 import { App } from './App'
 
-test('renders learn react link', () => {
-  const { asFragment } = render(<App />)
-  expect(asFragment(<App />)).toMatchSnapshot()
+describe('App', () => {
+  it('renders App component', () => {
+    render(<App />)
+    expect(screen.getByText(/search:/i)).toBeInTheDocument()
+    expect(screen.getByRole('textbox')).toBeInTheDocument()
+  })
 })

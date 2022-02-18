@@ -23,4 +23,12 @@ describe('events', () => {
     expect(handleChange).toHaveBeenCalledTimes(1)
     expect(checkbox).toBeChecked()
   })
+
+  it('input focus', () => {
+    render(<input type={'text'} data-testid={'simple-input'}/>) //const { getByTestId } =
+    const input = screen.getByTestId('simple-input')
+    expect(input).not.toHaveFocus()
+    input.focus()
+    expect(input).toHaveFocus()
+  })
 })

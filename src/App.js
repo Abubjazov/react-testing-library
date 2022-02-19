@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import './App.css'
 
 const getUser = () => Promise.resolve({ id: 1, name: "Yauhen" })

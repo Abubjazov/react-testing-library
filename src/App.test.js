@@ -1,4 +1,4 @@
-import { getByTestId, getByText, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from "@testing-library/user-event"
 
 import { App } from './App'
@@ -6,7 +6,7 @@ import { App } from './App'
 describe('App', () => {
   it('renders App component', async () => {
     render(<App />)
-    await screen.findByText(/logged in as/i)
+    await screen.findByText(/Logged in as/)
     expect(screen.queryByText(/searches for react/i)).toBeNull()
     userEvent.type(screen.getByRole('textbox'), 'React')
     expect(screen.getByText(/searches for react/i)).toBeInTheDocument()

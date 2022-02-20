@@ -63,13 +63,6 @@ const renderWithRouter = (
 
 describe('React Router', () => {
   it('should render the home page', () => {
-    // const history = createMemoryHistory()
-    // const { container } = render(
-    //   <Router history={history}>
-    //     <RouterComponent />
-    //   </Router>
-    // )
-
     const { container } = renderWithRouter(<RouterComponent />)
     const navbar = screen.getByTestId('navbar')
     const link = screen.getByTestId('home-link')
@@ -79,13 +72,6 @@ describe('React Router', () => {
   })
 
   it('should navigate to the contact page', () => {
-    // const history = createMemoryHistory()
-    // const { container } = render(
-    //   <Router history={history}>
-    //     <RouterComponent />
-    //   </Router>
-    // )
-
     const { container } = renderWithRouter(<RouterComponent />)
 
     fireEvent.click(screen.getByTestId('contact-link'))
@@ -93,16 +79,6 @@ describe('React Router', () => {
   })
 
   it('should navigate to error page if route is wrong', () => {
-    // const history = createMemoryHistory()
-
-    // history.push('/wrong-route')
-
-    // const { container } = render(
-    //   <Router history={history}>
-    //     <RouterComponent />
-    //   </Router>
-    // )
-
     const { container } = renderWithRouter(<RouterComponent />, {
       route: '/wrong-route'
     })
@@ -111,17 +87,6 @@ describe('React Router', () => {
   })
 
   it('rendering a component that uses withRouter', () => {
-    // const history = createMemoryHistory()
-    // const route = '/some-route'
-
-    // history.push(route)
-
-    // const { getByTestId } = render(
-    //   <Router history={history}>
-    //     <LocationDisplay />
-    //   </Router>
-    // )
-
     const route = '/some-route'
 
     renderWithRouter(<LocationDisplay />, { route })

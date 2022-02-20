@@ -1,73 +1,42 @@
-import { render, screen } from '@testing-library/react'
-import userEvent from "@testing-library/user-event"
+import { render, act, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import axios from 'axios'
 
 import { App } from './App'
 
+jest.mock('axios')
+const hits = [
+  { objectID: '1', title: 'Angular' },
+  { objectID: '2', title: 'React' }
+]
+
 describe('App', () => {
-  it('renders App component', async () => {
+  it('fetches news from an API', async () => {
+    axios.get.mockImplementationOnce(() => Promise.resolve({ data: { hits } }))
     render(<App />)
-    await screen.findByText(/Logged in as/)
-    expect(screen.queryByText(/searches for react/i)).toBeNull()
-    userEvent.type(screen.getByRole('textbox'), 'React')
-    expect(screen.getByText(/searches for react/i)).toBeInTheDocument()
-  })
-})
-
-describe('events', () => {
-  it('checkbox click', () => {
-    const handleChange = jest.fn()
-    const { container } = render(<input type={'checkbox'} onChange={handleChange}/>)
-    const checkbox = container.firstChild
-    expect(checkbox).not.toBeChecked()
-    userEvent.click(checkbox)
-    // userEvent.click(checkbox, { ctrlKey: true, shiftKey: true })
-    expect(checkbox).toBeChecked()
-  })
-
-  it('double click', () => {
-    const onChange = jest.fn()
-    const { container } = render(<input type={'checkbox'} onChange={onChange}/>)
-    const checkbox = container.firstChild
-    expect(checkbox).not.toBeChecked()
-    userEvent.dblClick(checkbox)
-    expect(onChange).toHaveBeenCalledTimes(2)
-  })
-
-  it('focus', () => {
-   render(
-      <div>
-        <input data-testid={'element'} type={'checkbox'} />
-        <input data-testid={'element'} type={'radio'} />
-        <input data-testid={'element'} type={'number'} />
-      </div>
+    userEvent.click(screen.getByRole('button'))
+    const items = await screen.findAllByRole('listitem')
+    expect(items).toHaveLength(2)
+    expect(axios.get).toHaveBeenCalledTimes(1)
+    expect(axios.get).toHaveBeenCalledWith(
+      'http://hn.algolia.com/api/v1/search?query=React'
     )
-
-    const [checkbox, radio, number] = screen.getAllByTestId('element')
-
-    userEvent.tab()
-    expect(checkbox).toHaveFocus()
-
-    userEvent.tab()
-    expect(radio).toHaveFocus()
-
-    userEvent.tab()
-    expect(number).toHaveFocus()
   })
 
-  it('select option', () => {
-    render(
-      <select>
-        <option value={'1'}>A</option>
-        <option value={'2'}>B</option>
-        <option value={'3'}>C</option>
-      </select>
-    )
+  it('fetches news from an API and reject', async () => {
+    axios.get.mockImplementationOnce(() => Promise.reject(new Error()))
+    render(<App />)
+    userEvent.click(screen.getByRole('button'))
+    const message = await screen.findByText(/Something went wrong/)
+    expect(message).toBeInTheDocument()
+  });
 
-    userEvent.selectOptions(screen.getByRole('combobox'), '1')
-    expect(screen.getByText('A').selected).toBeTruthy()
-
-    userEvent.selectOptions(screen.getByRole('combobox'), '2')
-    expect(screen.queryByText('A').selected).toBeFalsy()
-    expect(screen.getByText('B').selected).toBeTruthy()
+  it('fetches news from an API (alternative)', async () => {
+    const promise = Promise.resolve({ data: { hits } })
+    axios.get.mockImplementationOnce(() => promise)
+    render(<App />)
+    userEvent.click(screen.getByRole('button'))
+    await act(() => promise)
+    expect(screen.getAllByRole('listitem')).toHaveLength(2)
   })
 })
